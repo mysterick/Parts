@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sash Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        label,
+        input,
+        select {
+            display: block;
+            margin-bottom: 10px;
+            width:50%;
+            
+        }
+
+        input[type="number"],
+        select {
+            width: 50%;
+            padding: 5px;
+        
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+
+        .glass-button {
+            padding: 10px 15px;
+            background-color: #f0f0f0;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .glass-button.active {
+            background-color: #4caf50;
+            color: white;
+            border-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sash Calculator</h1>
+    <form id="sashForm">
+        <label for="windowType">Window Type:</label>
+        <select id="windowType" required>
+            <option value="singleHung">Single Hung</option>
+            <option value="xoox">XO/OX</option>
+        </select>
+
+        <label for="measurementType">Measurement Type:</label>
+        <select id="measurementType" required>
+            <option value="sash">Sash</option>
+            <option value="window">Window</option>
+        </select>
+
+        <label for="width">Width (inches):</label>
+        <input type="number" id="width" step="0.01" required />
+
+        <label for="height">Height (inches):</label>
+        <input type="number" id="height" step="0.01" required />
+
+        <button type="button" id="toggleGlass" class="glass-button">
+            Without Glass
+        </button>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+
+
+        let showGlass = false;
+        console.log(showGlass)
+
+
+        function round(value, decimals) {
+            return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
+        }
+
+        document
+            .getElementById("sashForm")
+            .addEventListener("submit", function (e) {
+                e.preventDefault();
+                calculateSizes();
+            });
+
+        const toggleButton = document.getElementById("toggleGlass");
+
+        toggleButton.addEventListener("click", function () {
+            showGlass = !showGlass;
+            this.textContent = showGlass ? "Without Glass" : "With Glass";
+            this.classList.toggle("active", !showGlass);
+            calculateSizes();
+        });
+
+
+        function calculateSizes() {
+
+            const windowType = document.getElementById("windowType").value;
+            const measurementType =
+                document.getElementById("measurementType").value;
+            const width =
+                parseFloat(document.getElementById("width").value) * 25.4;
+            const height =
+                parseFloat(document.getElementById("height").value) * 25.4;
+
+            console.log("W = " + width + "  H = " + height);
+
+            let result = "";
+
+
+            if (windowType === "xoox") {
+                if (measurementType === "sash") {
+                    const sashH1 = width / 25.4;
+                    const sashH2 = width / 25.4;
+                    const sashW = height / 25.4;
+                    const sashglassW = width - 60.5;
+                    const sashglassH = height - 66;
+
+                    console.log("GW=" + sashglassW + "  GH= " + sashglassH);
+
+                    result = `Sash H1 = ${round(sashH1, 3)} Qty: 1
+Sash H2 = ${round(sashH2, 3)} Qty: 1
+Sash W = ${round(sashW, 3)} Qty: 2
+Sashglass W = ${sashglassW}
+Sashglass H = ${sashglassH}`;
+
+                    if (showGlass) {
+                        result = result = `Sash H1 = ${round(sashH1, 3)} Qty: 1
+Sash H2 = ${round(sashH2, 3)} Qty: 1
+Sash W = ${round(sashW, 3)} Qty: 2`;
+                    }
+                } else {
+                    const sashH1 = round((height - 46 - 15 * 2 - 2) / 25.4, 3);
+                    const sashH2 = round((height - 46 - 15 * 2 - 2) / 25.4, 3);
+                    const sashW = round((width / 2 - 14.5 - 15 + 1) / 25.4, 3);
+                    const sashglassW = width / 2 - 77 - 15 + 3;
+                    const sashglassH = height - 109 - 15 * 2 - 3 - 2;
+
+                    result = `Sash H1 = ${sashH1} Qty: 1
+Sash H2 = ${sashH2} Qty: 1
+Sash W = ${sashW} Qty: 2
+Sashglass W = ${sashglassW}
+Sashglass H = ${sashglassH}`;
+
+                    if (showGlass) {
+                        result = `Sash H1 = ${sashH1} Qty: 1
+Sash H2 = ${sashH2} Qty: 1
+Sash W = ${sashW} Qty: 2`;
+                    }
+                }
+            } else {
+                if (measurementType === "sash") {
+                    const sashH = height / 25.4;
+                    const sashW1 = width / 25.4;
+                    const sashW2 = width / 25.4;
+                    const sashglassW = width - 60.5;
+                    const sashglassH = height - 66;
+
+                    result = `Sash H = ${round(sashH, 3)} Qty: 1
+Sash W1 = ${round(sashW1, 3)} Qty: 2
+Sash W2 = ${round(sashW2, 3)} Qty: 2
+Sashglass W = ${sashglassW}
+Sashglass H = ${sashglassH}`;
+
+                    if (showGlass) {
+                        result = `Sash H = ${round(sashH, 3)} Qty: 1
+Sash W1 = ${round(sashW1, 3)} Qty: 2
+Sash W2 = ${round(sashW2, 3)} Qty: 2`;
+                    }
+                } else {
+                    const sashH1 = round((height - 46 - 15 * 2 - 2) / 25.4, 3);
+                    const sashH2 = round((height - 46 - 15 * 2 - 2) / 25.4, 3);
+                    const sashW = round((width / 2 - 14.5 - 15 + 1) / 25.4, 3);
+                    const sashglassW = width / 2 - 77 - 15 + 3;
+                    const sashglassH = height - 109 - 15 * 2 - 3 - 2;
+
+                    result = `Sash H1 = ${sashH1} Qty: 1
+Sash H2 = ${sashH2} Qty: 1
+Sash W = ${sashW} Qty: 2
+Sashglass W = ${sashglassW}
+Sashglass H = ${sashglassH}`;
+
+                    if (showGlass) {
+                        `Sash H1 = ${sashH1} Qty: 1
+Sash H2 = ${sashH2} Qty: 1
+Sash W = ${sashW} Qty: 2`;
+                    }
+                }
+            }
+
+            document.getElementById("result").textContent = result;
+        };
+
+
+
+
+    </script>
+</body>
+
+</html>
